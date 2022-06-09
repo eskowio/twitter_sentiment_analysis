@@ -1,0 +1,39 @@
+---
+version: '3.7'
+services:
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: WkRmPU3GMFdPYaypM2djkdjhMg9FYWmA
+      RABBITMQ_NODENAME: rabbit@rabbitmq
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    networks:
+      - agh-network
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+  twitter-fetcher:
+    build:
+      context: ./tweet-fetcher
+    networks:
+      - agh-network
+    depends_on:
+    - rabbitmq
+    environment:
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: admin
+      RABBITMQ_QUEUE: twitter
+      RABBITMQ_HOSTNAME: rabbitmq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_MOCK: "false"
+      TWITTER_BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAMAIdgEAAAAA%2Fs3yzMaydihN9ufHsKqDJVEj3KQ%3D720JUDUI747vVNoGpT48G10kP9qNhOhAmJhZiuGpuh9VAlCyLl
+      TWITTER_TOPIC: "polska lang:pl"
+volumes:
+  rabbitmq:
+    driver: local
+networks:
+  agh-network:
