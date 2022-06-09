@@ -16,9 +16,10 @@ services:
       - "15672:15672"
     volumes:
       - rabbitmq:/var/lib/rabbitmq
-  twitter-fetcher:
+
+  data-processor:
     build:
-      context: ./tweet-fetcher
+      context: ./data-processor
     networks:
       - agh-network
     depends_on:
@@ -29,11 +30,44 @@ services:
       RABBITMQ_QUEUE: twitter
       RABBITMQ_HOSTNAME: rabbitmq
       RABBITMQ_PORT: "5672"
-      RABBITMQ_MOCK: "false"
-      TWITTER_BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAMAIdgEAAAAA%2Fs3yzMaydihN9ufHsKqDJVEj3KQ%3D720JUDUI747vVNoGpT48G10kP9qNhOhAmJhZiuGpuh9VAlCyLl
-      TWITTER_TOPIC: "polska lang:pl"
+      POSTGRESQL_HOSTNAME: postgres
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_USERNAME: twitt_producer
+      POSTGRESQL_PASSWORD: Loh6ziet
+      POSTGRESQL_DATABASE: sentimental_analysis
+
+#  twitter-fetcher:
+#    build:
+#      context: ./tweet-fetcher
+#    networks:
+#      - agh-network
+#    depends_on:
+#    - rabbitmq
+#    environment:
+#      RABBITMQ_USER: admin
+#      RABBITMQ_PASSWORD: admin
+#      RABBITMQ_QUEUE: twitter
+#      RABBITMQ_HOSTNAME: rabbitmq
+#      RABBITMQ_PORT: "5672"
+#      RABBITMQ_MOCK: "false"
+#      TWITTER_BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAMAIdgEAAAAA%2Fs3yzMaydihN9ufHsKqDJVEj3KQ%3D720JUDUI747vVNoGpT48G10kP9qNhOhAmJhZiuGpuh9VAlCyLl
+#      TWITTER_TOPIC: "polska lang:pl"
+  db:
+    image: postgres
+    container_name: postgresql
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+
 volumes:
   rabbitmq:
+    driver: local
+  postgresql:
     driver: local
 networks:
   agh-network:

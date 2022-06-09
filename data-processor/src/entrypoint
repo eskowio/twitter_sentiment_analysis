@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+readonly MAIN_DIR="$(dirname "$(readlink -f "$0")")"
+
+python ${MAIN_DIR}/app.py
