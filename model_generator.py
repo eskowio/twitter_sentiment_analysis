@@ -54,18 +54,18 @@ tweets_cleaned =  tweets.apply(cleaning)
 tweets_cleaned
 
 stop_words = set(stopwords.words('english'))
+
 tweets_stemmed = tweets_cleaned.apply(lambda x: [ps.stem(word) for word in x if word not in stop_words])
 tweets_lemmatized = tweets_cleaned.apply(lambda x: [ls.lemmatize(word) for word in x if word not in stop_words])
-
 
 tweets_stemmed = tweets_stemmed.apply(lambda x: ' '.join(x))
 tweets_lemmatized = tweets_lemmatized.apply(lambda x: ' '.join(x))
 
-
 df['scrapped_text'] = df['text']
 df['Lemmatized_text'] = tweets_lemmatized.to_frame() 
 df['Stemmed_text'] = tweets_lemmatized.to_frame()
-new_df=df.drop(['Unnamed: 0', 'id', 'permalink', 'username', 'to', 'text', 'created_at','retweets', 'favorites', 'mentions', 'hashtags', 'geo',],axis=1)
+
+new_df=df.drop(['Unnamed: 0', 'id', 'username',  'created_at','text',],axis=1)
 
 new_df.head()
 
