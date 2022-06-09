@@ -2,7 +2,7 @@
 
 from lib.config import ConfigurationManager
 from lib.logger import Logger
-from lib.rabbitmq import RabbitProducer, RabbitProducerMock
+from lib.rabbitmq import RabbitWrapper, RabbitWrapperMock
 from lib.twitter import TwitterFetcher
 
 """ Application Main """
@@ -32,9 +32,9 @@ class App(object):
         Logger.info("Initialize producer . . .")
         producer = None
         if rabbitmq_props['mock'] == "false":
-            producer = RabbitProducer(rabbitmq_props)
+            producer = RabbitWrapper(rabbitmq_props)
         else:
-            producer = RabbitProducerMock()
+            producer = RabbitWrapperMock()
 
 
         fetcher = TwitterFetcher(twitter_props, producer)
