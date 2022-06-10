@@ -86,7 +86,7 @@ tweets_lemmatized = tweets_lemmatized.apply(lambda x: ' '.join(x))
 
 df['scrapped_text'] = df['text']
 df['Lemmatized_text'] = tweets_lemmatized.to_frame() 
-df['Stemmed_text'] = tweets_lemmatized.to_frame()
+df['Stemmed_text'] = tweets_stemmed.to_frame()
 new_df=df.drop(['username',],axis=1)
 
 new_df.head()
