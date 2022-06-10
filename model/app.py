@@ -6,6 +6,8 @@ import nltk
 import re
 import nltk
 from keras.models import Sequential
+from keras.layers import LSTM, Dense, Dropout, Masking, Embedding, SimpleRNN, advanced_activations
+from keras.wrappers.scikit_learn import KerasClassifier
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
@@ -45,6 +47,13 @@ df = pd.read_csv(path, sep=';')
 print(df.shape)
 tweets = df['text']
 print(tweets)
+
+def rnn():
+  model_rnn = Sequential()
+
+  model_rnn.add(Embedding(input_dim=30, output_dim=30))
+  
+  model_rnn.add(Masking(mask_value=0.0))
 
 def decontracted(phrase):
     # specific
