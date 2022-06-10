@@ -116,8 +116,8 @@ lemm_df.shape
 
 cv=CountVectorizer()
 
-X=cv.fit_transform(stem_df['Stemmed_text']).toarray()
-Y=pd.get_dummies(stem_df['comp_score'])
+X=cv.fit_transform(lemm_df['Lemmatized_text']).toarray()
+Y=pd.get_dummies(lemm_df['comp_score'])
 Y=Y.iloc[:,1].values
 
 
