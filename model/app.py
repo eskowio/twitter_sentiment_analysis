@@ -5,6 +5,7 @@ import pandas as pd
 import nltk
 import re
 import nltk
+from keras.models import Sequential
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
@@ -121,15 +122,25 @@ Y=pd.get_dummies(stem_df['comp_score'])
 Y=Y.iloc[:,1].values
 
 
-x_train,x_test,y_train,y_test = train_test_split(X,Y,test_size=0.2,random_state=1)
-model=MultinomialNB().fit(x_train,y_train)
-y_pred=model.predict(x_test)
 
-print(classification_report(y_test,y_pred))
-cm = confusion_matrix(y_test, y_pred)
-svm = sn.heatmap(cm, annot=True, fmt = '.2f')
-figure = svm.get_figure()    
-figure.savefig('model/svm_conf.png', dpi=400)
+x_train,x_test,y_train,y_test = train_test_split(X,Y,test_size=0.2,random_state=1)
+
+model = Sequential()
+model.add(Embedding(500, 120, input_length = X.shape[1]))
+model.add(SpatialDropout1D(0.4))
+model.add(LSTM(176, dropout=0.2, recurrent_dropout=0.2))
+model.add(Dense(2,activation='softmax'))
+model.compile(loss = 'categorical_crossentropy', optimizer='adam', metrics = ['accuracy'])
+print(model.summary())
+
+batch_size=32
+model.fit(X_train, y_train, epochs = 5, batch_size=batch_size, verbose = 'auto')
+model.evaluate(X_test,y_test)
+
+print("Prediction: ",model.predict_classes(X_test[5:10]))
+
+print("Actual: \n",y_test[5:10])
+
 
 dump(cv,open('model/vectorizer.pkl','wb'))
 
