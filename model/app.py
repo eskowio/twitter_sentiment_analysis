@@ -102,7 +102,7 @@ lemm_df=df[['Lemmatized_text']]
 nltk.download('vader_lexicon')
 sid=SentimentIntensityAnalyzer()
 
-lemm_df['scores']=lemm_df['Stemmed_text'].apply(lambda Stemmed_text :sid.polarity_scores(Stemmed_text))
+lemm_df['scores']=lemm_df['Lemmatized_text'].apply(lambda Lemmatized_text :sid.polarity_scores(Lemmatized_text))
 lemm_df['compound']=lemm_df['scores'].apply(lambda score_dict:score_dict['compound'])
 
 lemm_df['comp_score']=lemm_df['compound'].apply(lambda c:'pos' if c>=0 else "neg")
