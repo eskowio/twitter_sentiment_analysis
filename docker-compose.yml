@@ -12,8 +12,7 @@ services:
     networks:
       - agh-network
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 127.0.0.1:15672:15672
     volumes:
       - rabbitmq:/var/lib/rabbitmq
 
@@ -30,29 +29,29 @@ services:
       RABBITMQ_QUEUE: twitter
       RABBITMQ_HOSTNAME: rabbitmq
       RABBITMQ_PORT: "5672"
-      POSTGRESQL_HOSTNAME: postgres
+      POSTGRESQL_HOSTNAME: postgresql
       POSTGRESQL_PORT: "5432"
       POSTGRESQL_USERNAME: twitt_producer
       POSTGRESQL_PASSWORD: Loh6ziet
       POSTGRESQL_DATABASE: sentimental_analysis
 
-#  twitter-fetcher:
-#    build:
-#      context: ./tweet-fetcher
-#    networks:
-#      - agh-network
-#    depends_on:
-#    - rabbitmq
-#    environment:
-#      RABBITMQ_USER: admin
-#      RABBITMQ_PASSWORD: admin
-#      RABBITMQ_QUEUE: twitter
-#      RABBITMQ_HOSTNAME: rabbitmq
-#      RABBITMQ_PORT: "5672"
-#      RABBITMQ_MOCK: "false"
-#      TWITTER_BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAMAIdgEAAAAA%2Fs3yzMaydihN9ufHsKqDJVEj3KQ%3D720JUDUI747vVNoGpT48G10kP9qNhOhAmJhZiuGpuh9VAlCyLl
-#      TWITTER_TOPIC: "polska lang:pl"
-  db:
+  twitter-fetcher-covid:
+    build:
+      context: ./tweet-fetcher
+    networks:
+      - agh-network
+    depends_on:
+    - rabbitmq
+    environment:
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: admin
+      RABBITMQ_QUEUE: twitter
+      RABBITMQ_HOSTNAME: rabbitmq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_MOCK: "false"
+      TWITTER_BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAMAIdgEAAAAA%2Fs3yzMaydihN9ufHsKqDJVEj3KQ%3D720JUDUI747vVNoGpT48G10kP9qNhOhAmJhZiuGpuh9VAlCyLl
+      TWITTER_TOPIC: "covid lang:en"
+  postgresql:
     image: postgres
     container_name: postgresql
     volumes:
@@ -61,13 +60,43 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+        #  ports:
+        #- "5432"
+    networks:
+      - agh-network
+
+  superset:
+    build:
+      context: ./superset
+    container_name: superset
+    environment:
+      ENABLE_DEV_MODE: "0"
+      ADMIN_USERNAME: wskoczynska
+      ADMIN_PASSWORD: rsvSQcNEfXTG5MJC3cTP28ST
+      ADMIN_EMAIL: admin@admin.local
+      SUPERSET_PORT: "8080"
+      MAPBOX_API_KEY: pk.eyJ1IjoiZXNrb3dpbyIsImEiOiJjbDFvdHduYnYwN3A1M2NtdXd4ZXI1d2JhIn0.0WJcsdK_9goz2hWGcQ7OpQ
+    networks:
+      - agh-network
     ports:
-      - "5432:5432"
+      - 18080:8080
+    volumes:
+      - superset:/app/superset_home
+
+  model:
+    build:
+      context: ./model
+    networks:
+      - agh-network
+    volumes:
+      - ./data_model:/app/model
 
 volumes:
   rabbitmq:
     driver: local
   postgresql:
+    driver: local
+  superset:
     driver: local
 networks:
   agh-network:

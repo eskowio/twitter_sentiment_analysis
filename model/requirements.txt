@@ -1,0 +1,7 @@
+pika==1.2.1
+python-dateutil
+nltk
+sklearn
+psycopg2-binary
+pandas
+seaborn
