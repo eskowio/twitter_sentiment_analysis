@@ -21,6 +21,9 @@ services:
       context: ./data-processor
     networks:
       - agh-network
+    volumes:
+    - ./data_model/vectorizer.pkl:/app/ml/countvectorizer.pkl
+    - ./data_model/model.pkl:/app/ml/model.pkl
     depends_on:
     - rabbitmq
     environment:

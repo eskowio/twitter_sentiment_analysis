@@ -5,3 +5,5 @@ sklearn
 psycopg2-binary
 pandas
 seaborn
+keras
+tensorflow

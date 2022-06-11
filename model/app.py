@@ -16,6 +16,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from pickle import dump
 from sklearn.metrics import confusion_matrix,accuracy_score,classification_report
 import seaborn as sn
+from keras.layers import Embedding, SpatialDropout1D, LSTM
 
 ps = PorterStemmer()
 ls = WordNetLemmatizer()
